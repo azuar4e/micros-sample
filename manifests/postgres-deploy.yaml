@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: postgres-kc
+  name: postgres-kc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-kc
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: postgres-kc
+    spec:
+      containers:
+      - image: postgres:17
+        name: postgres
+        envFrom:
+        - secretRef:
+            name: postgres-credentials
+        volumeMounts:
+          - name: postgres-datos
+            mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: postgres-datos
+        persistentVolumeClaim:
+          claimName: postgres-kc-pvc
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-kc-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

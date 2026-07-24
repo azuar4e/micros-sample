@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: apigw
+  name: apigw
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apigw
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: apigw
+    spec:
+      containers:
+      - image: azuar4e/apigw-ecom:v12
+        name: apigw-ecom
+        envFrom:
+          - secretRef:
+              name: client-secret
