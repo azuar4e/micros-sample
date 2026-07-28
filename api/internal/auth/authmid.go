@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/coreos/go-oidc/v3/oidc"
@@ -16,29 +17,30 @@ type Claims struct {
 	} `json:"realm_access"`
 }
 
+var oidcVerifier *oidc.IDTokenVerifier
+
+func InitAuth(ctx context.Context) error {
+	ctx = oidc.InsecureIssuerURLContext(ctx, "http://localhost:8080/realms/mini-e-comerce")
+
+	provider, err := oidc.NewProvider(ctx, "http://keycloak-svc:8080/realms/mini-e-comerce")
+	if err != nil {
+		return fmt.Errorf("could not init oidc provider: %w", err)
+	}
+
+	oidcVerifier = provider.Verifier(&oidc.Config{SkipClientIDCheck: true})
+
+	return nil
+}
+
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		rawToken, err := c.Cookie("AccessToken")
-
-		if err != nil {
+		if err != nil || rawToken == "" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "No authorization cookie found"})
 			return
 		}
 
-		if rawToken == "" {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Empty authorization token"})
-			return
-		}
-
-		ctx := oidc.InsecureIssuerURLContext(context.Background(), "http://localhost:8080/realms/mini-e-comerce")
-		provider, err := oidc.NewProvider(ctx, "http://keycloak-svc:8080/realms/mini-e-comerce")
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "could not reach oidc provider", "details": err.Error()})
-			return
-		}
-
-		verifier := provider.Verifier(&oidc.Config{SkipClientIDCheck: true})
-		idToken, err := verifier.Verify(c.Request.Context(), rawToken)
+		idToken, err := oidcVerifier.Verify(c.Request.Context(), rawToken) // reutiliza el verifier ya creado
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid token", "details": err.Error()})
 			return

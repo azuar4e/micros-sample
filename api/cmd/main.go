@@ -1,7 +1,9 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/azuar4e/api/internal/auth"
@@ -9,11 +11,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func init() {
-
-}
-
 func main() {
+	ctx := context.Background()
+	if err := auth.InitAuth(ctx); err != nil {
+		log.Fatal(err)
+	}
+
 	r := gin.Default()
 
 	v1 := r.Group("/api/v1")

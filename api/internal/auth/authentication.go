@@ -45,7 +45,6 @@ func oauthConfig() *oauth2.Config {
 }
 
 func Login(c *gin.Context) {
-
 	cfg := oauthConfig()
 
 	auth, err := AuthorizationURL(cfg)
@@ -63,7 +62,6 @@ func Login(c *gin.Context) {
 }
 
 func Callback(c *gin.Context) {
-
 	state := c.Query("state")
 	code := c.Query("code")
 

@@ -17,8 +17,7 @@ spec:
       labels:
         app: orders
     spec:
+      serviceAccountName: orders-sa
       containers:
       - image: azuar4e/orders-svc:v2
         name: orders-svc
-        resources: {}
-status: {}

@@ -17,8 +17,7 @@ spec:
       labels:
         app: products
     spec:
+      serviceAccountName: products-sa
       containers:
       - image: azuar4e/products-svc:local
         name: products-svc
-        resources: {}
-status: {}
