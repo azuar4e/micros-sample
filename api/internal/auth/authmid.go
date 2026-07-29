@@ -20,9 +20,9 @@ type Claims struct {
 var oidcVerifier *oidc.IDTokenVerifier
 
 func InitAuth(ctx context.Context) error {
-	ctx = oidc.InsecureIssuerURLContext(ctx, "http://localhost:8080/realms/mini-e-comerce")
+	ctx = oidc.InsecureIssuerURLContext(ctx, "http://localhost:8080/realms/mini-e-commerce")
 
-	provider, err := oidc.NewProvider(ctx, "http://keycloak-svc:8080/realms/mini-e-comerce")
+	provider, err := oidc.NewProvider(ctx, "http://keycloak-svc:8080/realms/mini-e-commerce")
 	if err != nil {
 		return fmt.Errorf("could not init oidc provider: %w", err)
 	}

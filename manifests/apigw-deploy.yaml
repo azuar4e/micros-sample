@@ -19,7 +19,7 @@ spec:
     spec:
       serviceAccountName: apigw-sa
       containers:
-      - image: azuar4e/apigw-ecom:v13
+      - image: azuar4e/apigw-ecom:v14
         name: apigw-ecom
         envFrom:
           - secretRef:

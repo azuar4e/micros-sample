@@ -36,8 +36,8 @@ func oauthConfig() *oauth2.Config {
 		ClientID:     "oidc-client",
 		ClientSecret: os.Getenv("CLIENT_SECRET"),
 		Endpoint: oauth2.Endpoint{
-			AuthURL:  "http://localhost:8080/realms/mini-e-comerce/protocol/openid-connect/auth",
-			TokenURL: "http://keycloak-svc:8080/realms/mini-e-comerce/protocol/openid-connect/token",
+			AuthURL:  "http://localhost:8080/realms/mini-e-commerce/protocol/openid-connect/auth",
+			TokenURL: "http://keycloak-svc:8080/realms/mini-e-commerce/protocol/openid-connect/token",
 		},
 		RedirectURL: "https://localhost:8443/api/v1/callback",
 		Scopes:      []string{"openid", "profile", "email"},
