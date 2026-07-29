@@ -46,7 +46,7 @@ And then:
 kind load docker-image azuar4e/products-svc:local azuar4e/orders-svc:v2 azuar4e/apigw-ecom:v14 --name kind
 ````
 
->Notice that i'm using Kind for my local cluster. If you are using other type like minikube, you should search for the propper command.
+>Notice that i'm using Kind for my local cluster. If you are using other type like Minikube, look for the proper command.
 
 ## Requirements
 
