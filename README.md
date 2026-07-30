@@ -8,7 +8,7 @@
 
 The source code of this repository corresponds to a sample of a mini e-commerce application. The API Gateway is the entry point to the application, while the Orders and Products services implement the business logic. 
 
-The complete explanation of the project can be found in my [Zero Trust in Kubernetes](https://azuar4e.github.io/en/posts/tfg) article on my blog.
+The complete explanation of the project can be found in my [Zero Trust in Kubernetes](https://azuar4e.github.io/en/posts/micros-sec-istio/) article on my blog.
 
 ## Overview
 
@@ -33,7 +33,7 @@ The project is intended to run entirely on a local Kubernetes cluster (Kind), al
 
 ## Deployment
 
-To deploy the microservices in a local environment as it's explained in the blog, we have to generate the docker images for them, and then upload it to the cluster.
+To deploy the microservices in a local environment, we have to generate the docker images for them, and then upload it to the cluster.
 
 For example, for the API Gateway we will do.
 ````Bash
@@ -47,6 +47,16 @@ kind load docker-image azuar4e/products-svc:local azuar4e/orders-svc:v2 azuar4e/
 ````
 
 >Notice that i'm using Kind for my local cluster. If you are using other type like Minikube, look for the proper command.
+
+To deploy the manifests of the infraestructure:
+- First of all you should change the images used in the deployments with the names of the ones you have generated.
+- Second, and as its explained in the blog, you need to create a self signed-cert with the private key, and create a secret of tls type so the Istio Gateway can work (`credentialName: api-gateway-tls-secret`).
+
+To create those files you can use the following command:
+
+```bash
+openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes -subj "/CN=localhost"
+```
 
 ## Requirements
 
