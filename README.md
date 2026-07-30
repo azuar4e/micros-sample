@@ -58,6 +58,12 @@ To create those files you can use the following command:
 openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes -subj "/CN=localhost"
 ```
 
+And then:
+
+```bash
+kubectl create secret tls api-gateway-tls-secret --key=key.pem --cert=cert.pem -n istio-system
+```
+
 ## Requirements
 
 - Go 1.24+
