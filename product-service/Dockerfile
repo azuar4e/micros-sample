@@ -1,25 +1,19 @@
-# Build Stage
 FROM golang:1.26.1-alpine AS builder
+WORKDIR /src
 
-WORKDIR /app
-
-COPY go.mod go.sum ./
-
+COPY proto/go.mod proto/go.sum ./proto/
+COPY product-service/go.mod product-service/go.sum ./product-service/
+WORKDIR /src/product-service
 RUN go mod download
 
-COPY . .
+WORKDIR /src
+COPY proto/ ./proto/
+COPY product-service/ ./product-service/
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o main ./cmd/
+WORKDIR /src/product-service
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o /out/main ./cmd/
 
-
-FROM alpine:latest
-
-WORKDIR /app
-
-RUN apk add --no-cache ca-certificates
-
-COPY --from=builder /app/main .
-
-EXPOSE 8081
-
-CMD ["./main"]
+FROM gcr.io/distroless/static-debian12:nonroot
+COPY --from=builder /out/main /main
+EXPOSE 8081 8077
+ENTRYPOINT ["/main"]

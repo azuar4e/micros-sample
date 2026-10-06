@@ -6,13 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Product struct {
+type Product_rest struct {
 	Id    string `json:"id"`
 	Name  string `json:"name"`
 	Price int64  `json:"price"`
 }
 
-var products = []Product{
+var products = []Product_rest{
 	{Id: "1", Name: "Mechanic Keyboard", Price: 100},
 	{Id: "2", Name: "2K Monitor", Price: 300},
 	{Id: "3", Name: "Mouse", Price: 50},

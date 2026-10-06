@@ -20,10 +20,6 @@ func PostOrder(c *gin.Context) {
 		return
 	}
 
-	// Inyectas el user_id del token para que order-service sepa de quién es el pedido
-	userID, _ := c.Get("userID")
-	reqBody["user_id"] = userID
-
 	jsonBody, _ := json.Marshal(reqBody)
 
 	resp, err := Chttp.Post(ordersServiceURL+"/orders", ContentType, bytes.NewReader(jsonBody))

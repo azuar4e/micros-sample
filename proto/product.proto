@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package products;
+
+option go_package = "github.com/azuar4e/proto";
+
+service ProductService {
+  rpc GetProducts(GetProductsRequest) returns (GetProductsResponse);
+  rpc GetProductById(GetProductByIdRequest) returns (GetProductByIdResponse);
+}
+
+message Product {
+  string id = 1;
+  string name = 2;
+  int64 price = 3;
+}
+
+message GetProductsRequest {
+}
+
+message GetProductByIdRequest {
+  string id = 1;
+}
+
+message GetProductByIdResponse {
+  Product pr = 1;
+}
+
+message GetProductsResponse {
+  repeated Product pr = 1;
+}

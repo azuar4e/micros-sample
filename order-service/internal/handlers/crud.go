@@ -1,9 +1,12 @@
 package handlers
 
 import (
+	"context"
 	"net/http"
 	"sync"
+	"time"
 
+	pb "github.com/azuar4e/proto"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -16,7 +19,15 @@ type Order struct {
 
 var orders sync.Map
 
-func CreateOrder(c *gin.Context) {
+type OrderHandler struct {
+	Products pb.ProductServiceClient
+}
+
+func (h *OrderHandler) CreateOrder(c *gin.Context) {
+	// Timeout for context
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*15)
+	defer cancel()
+
 	var reqOrder struct {
 		ProductId string `json:"product_id" binding:"required"`
 		Quantity  int    `json:"quantity" binding:"required,gt=0"`
@@ -27,8 +38,11 @@ func CreateOrder(c *gin.Context) {
 		return
 	}
 
-	resp, err := http.Get("http://products-svc:8081/products/" + reqOrder.ProductId)
-	if err != nil || resp.StatusCode != http.StatusOK {
+	_, err := h.Products.GetProductById(ctx, &pb.GetProductByIdRequest{
+		Id: reqOrder.ProductId,
+	})
+
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid body"})
 		return
 	}
@@ -39,8 +53,7 @@ func CreateOrder(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": order})
 }
 
-func GetOrderById(c *gin.Context) {
-
+func (h *OrderHandler) GetOrderById(c *gin.Context) {
 	id := c.Param("id")
 
 	orderData, ok := orders.Load(id)
