@@ -1,0 +1,85 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: products-policy
+  namespace: default
+spec:
+  endpointSelector:
+    matchLabels:
+      app: products
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: orders
+      toPorts:
+        - ports:
+          - port: "8077"   # gRPC
+            protocol: TCP
+          rules:
+            http:
+            - method: "POST"
+              path: "/products.ProductService/GetProductById"
+    - fromEndpoints:
+        - matchLabels:
+            app: apigw
+      toPorts:
+        - ports:
+          - port: "8081"   # REST
+            protocol: TCP
+          rules:
+              http:
+              - method: "GET"
+                path: "/products"
+              - method: "GET"
+                path: "/products/[0-9]+"
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: orders-policy
+  namespace: default
+spec:
+  endpointSelector:
+    matchLabels:
+      app: orders
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: apigw
+      toPorts:
+        - ports:
+          - port: "8082"
+            protocol: TCP
+          rules:
+              http:
+              - method: "POST"
+                path: "/orders"
+              - method: "GET"
+                path: "/orders/[0-9a-f-]+"
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: apigw-policy
+  namespace: default
+spec:
+  endpointSelector:
+    matchLabels:
+      app: apigw
+  ingress:
+    - fromEntities:
+        - ingress
+      toPorts:
+        - ports:
+          - port: "9090"
+            protocol: TCP
+          rules:
+              http:
+              - method: "GET"
+                path: "/api/v1/products"
+              - method: "GET"
+                path: "/api/v1/products/[0-9]+"
+              - method: "POST"
+                path: "/api/v1/orders"
+              - method: "GET"
+                path: "/api/v1/orders/[0-9a-f-]+"

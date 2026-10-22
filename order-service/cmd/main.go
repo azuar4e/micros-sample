@@ -16,7 +16,7 @@ func main() {
 	// order grpc client
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	conn, err := grpc.NewClient("localhost:8077", opts...)
+	conn, err := grpc.NewClient("products-svc:8077", opts...)
 	if err != nil {
 		log.Fatalf("Failed to connect: %v", err)
 	}

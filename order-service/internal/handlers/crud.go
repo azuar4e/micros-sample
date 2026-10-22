@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"sync"
 	"time"
@@ -9,6 +10,8 @@ import (
 	pb "github.com/azuar4e/proto"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type Order struct {
@@ -43,7 +46,15 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 	})
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid body"})
+		log.Printf("GetProductById(%s): %v", reqOrder.ProductId, err)
+		switch status.Code(err) {
+		case codes.NotFound:
+			c.JSON(http.StatusBadRequest, gin.H{"error": "product not found"})
+		case codes.DeadlineExceeded, codes.Unavailable:
+			c.JSON(http.StatusBadGateway, gin.H{"error": "product-service unavailable"})
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
 		return
 	}
 

@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
   labels:
     app: orders
   name: orders
@@ -13,11 +12,10 @@ spec:
   strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: orders
+        ebpf-sec: enforce
     spec:
-      serviceAccountName: orders-sa
       containers:
-      - image: azuar4e/orders-svc:v2
+      - image: azuar4e/orders-svc:v5
         name: orders-svc

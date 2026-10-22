@@ -14,11 +14,8 @@ spec:
     metadata:
       labels:
         app: apigw
+        ebpf-sec: enforce
     spec:
-      serviceAccountName: apigw-sa
       containers:
-      - image: azuar4e/apigw-ecom:v14
+      - image: azuar4e/apigw-ecom:v2
         name: apigw-ecom
-        envFrom:
-          - secretRef:
-              name: client-secret
