@@ -8,7 +8,7 @@
 
 This repository contains the source code for a sample mini e-commerce application. The API Gateway is the entry point to the application, while the Orders and Products services implement the business logic.
 
-This is the `grpc` branch. It is the version used in my article [Cilium + eBPF: two sides of the same coin](https://azuar4e.github.io/en/posts/cilium/), where the microservices run on a Cilium cluster. The original version, with Istio and Keycloak, is explained in [Zero Trust in Kubernetes](https://azuar4e.github.io/en/posts/micros-sec-istio/).
+This is the `grpc` branch. It is the version used in my article [Cilium + EBPF: Observability and Security in Kubernetes](https://azuar4e.github.io/en/posts/cilium/), where the microservices run on a Cilium cluster. The original version, with Istio and Keycloak, is explained in [Zero Trust in Kubernetes](https://azuar4e.github.io/en/posts/micros-sec-istio/).
 
 ## Overview
 
